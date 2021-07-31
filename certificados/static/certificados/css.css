@@ -1,0 +1,198 @@
+.situacao_aprovado {
+    color: #198754;
+}
+
+.situacao_pendente {
+    color: #ffc107;
+}
+
+.situacao_recusado {
+    color: #dc3545;
+}
+
+.situacao_erro {
+    color: #0dcaf0;
+}
+
+.lupa {
+    float: left;
+    margin: 7px 16px 0 16px;
+}
+
+.barra_pesquisa_certificados {
+    width: 70%;
+}
+
+.linkFiltros {
+    background-color: transparent;
+    border: 0px transparent;
+    transition: all 0.2s;
+    padding: 0;
+}
+
+.forminvisivel {
+    display: none;
+}
+
+.form_center {
+    position: relative;
+    width: 50%;
+    left: 25.0%;
+}
+
+.fazer_modal {
+    position: relative;
+    width: 50%;
+    animation: animate_modal;
+    animation-duration: 0.8s;
+    z-index: 2;
+}
+
+@keyframes animate_modal {
+    0% {opacity: 0;}
+    25%  {opacity: 0.25;}
+    50%  {opacity:  0.5;}
+    50%  {opacity:  0.75;}
+    100% {opacity:  1;}
+}
+
+.fechar_modal {
+    margin-left: 14px; 
+    cursor: pointer; 
+    display: inline;
+}
+
+.link_login {
+    text-decoration: none;
+}
+
+.ver_certificado {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+    max-width: 90%;
+    word-wrap: break-word;
+}
+
+.imagem {
+    max-width: 40%;
+    min-width: 25%;
+}
+
+.dropdown-perfil-menu {
+    width: 345px !important;
+    left: -620% !important;
+    padding: 10px;
+}
+
+.opcoes-dropdown-perfil-menu {
+    border-radius: 4px !important;
+    height: 35px !important;
+}
+
+.nome-usuario {
+    margin: 0 5px 0 0;
+}
+
+.navbar_ajustar_menu {
+    padding-left: 0;
+    padding-right: 0;
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.navbar_ajustar_menu2 {
+    float: right;
+}
+
+.div_barra_pesquisa {
+    width: 50%;
+}
+
+@media only screen and (max-width: 370px) {
+    .dropdown-perfil-menu {
+        width: 290px !important;
+        left: -495% !important;
+    }
+}
+
+@media only screen and (max-width: 305px) {
+    .dropdown-perfil-menu {
+        width: 250px !important;
+        left: -415% !important;
+    }
+}
+
+@media only screen and (max-width: 285px) {
+    .dropdown-perfil-menu {
+        width: 225px !important;
+        left: -10% !important;
+    }
+}
+
+@media only screen and (max-width: 237px) {
+    .dropdown-perfil-menu {
+        width: 180px !important;
+        left: -265% !important;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .form-situacao {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 600px) {
+    .form-horas {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 700px) {
+    .form-data-emissao {
+        display: none;
+    }
+}
+
+@media only screen and (max-width: 720px) {
+    .div_barra_pesquisa {
+        width: 60%;
+    }
+}
+
+@media only screen and (max-width: 595px) {
+    .div_barra_pesquisa {
+        width: 70%;
+    }
+}
+
+@media only screen and (max-width: 490px) {
+    .div_barra_pesquisa {
+        width: 80%;
+    }
+}
+
+@media only screen and (max-width: 430px) {
+    .div_barra_pesquisa {
+        width: 90%;
+    }
+}
+
+@media only screen and (max-width: 380px) {
+    .div_barra_pesquisa {
+        width: 100%;
+    }
+
+    .barra_pesquisa_certificados {
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width: 1000px) {
+    .nome-usuario {
+        display: none !important;
+    }
+}
+
+@media only screen and (min-width: 2400px) {}

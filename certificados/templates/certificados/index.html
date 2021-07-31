@@ -1,0 +1,38 @@
+{% extends 'certificados/base.html' %}
+
+{% block conteudo%}
+    {% if lista_certificados %}
+    <h4>Últimos 10 certificados enviados</h4>
+
+        <table class="table" style="margin-top: 32px;">
+            <tr>
+                <th> Autor </th>
+                <th> Título </th>
+                <th class="form-horas"> Horas </th>
+                <th class="form-data-emissao"> Data de emissão </th>
+                <th> Data de envio </th>
+                <th class="form-situacao"> Situação </th>
+            </tr>
+        {% for p in lista_certificados %}
+            <tr id="tabela_{{p}}" style="display: normal;" class="elementos_tabela">
+                <td>{{p.tamanho_autor}}</td>
+                <td id="titulo_tabela_{{p}}"><a href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
+                <td class="form-horas"> {{p.horas}} </td>
+                <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>
+                <td> {{p.data_envio|date:'d M. Y'}} </td>
+                {% if p.situacao == 1 %}
+                    <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_aprovado"> {{situacao.0}} </span></td>
+                {% elif p.situacao == 2 %}
+                    <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_pendente"> {{situacao.1}} </span></td>
+                {% elif p.situacao == 3 %}
+                    <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_recusado"> {{situacao.2}} </span></td>
+                {% else %}
+                    <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </table>
+    {% else %}
+        <p>Nenhum certificado cadastrado.</p>
+    {% endif %}
+{% endblock %}

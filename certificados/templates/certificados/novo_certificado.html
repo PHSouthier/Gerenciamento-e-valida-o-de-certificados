@@ -1,0 +1,20 @@
+{% extends 'certificados/base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block conteudo %}
+    <div class="form_center">
+        <h2 class="font-weight-light pb-3"> Adicionar certificado </h2>
+
+        <form action="/certificados/novo_certificado/" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <br>
+            <div class="d-grid gap-2"> 
+                <input type="submit" class="btn btn-primary" value="Adicionar">
+            </div>
+        </form><br>
+    </div>
+
+    <script src="{% static 'certificados/novo_certificado.js'%}"></script>
+{% endblock %}
