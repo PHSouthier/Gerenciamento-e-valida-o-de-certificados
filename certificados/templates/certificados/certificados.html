@@ -30,8 +30,8 @@
         <div>
             {% for p in lista_certificados %}
                 <tr id="tabela_{{p}}" style="display: normal;" class="elementos_tabela">
-                    <td>{{p.tamanho_autor}}</td>
-                    <td><a id="titulo_tabela_{{p}}" href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
+                    <td class="break-word">{{p.tamanho_autor}}</td>
+                    <td class="break-all"><a id="titulo_tabela_{{p}}" href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
                     <td class="form-horas"> {{p.horas}} </td>
                     <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>
                     <td> {{p.data_envio|date:'d M. Y'}} </td>

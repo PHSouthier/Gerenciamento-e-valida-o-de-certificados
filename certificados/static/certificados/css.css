@@ -71,6 +71,14 @@
     left: 50%;
     transform: translate(-50%, 0);
     max-width: 90%;
+    word-break: break-all;
+}
+
+.break-all {
+    word-break: break-all;
+}
+
+.break-word {
     word-wrap: break-word;
 }
 

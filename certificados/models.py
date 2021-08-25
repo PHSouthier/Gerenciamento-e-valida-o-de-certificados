@@ -17,18 +17,18 @@ class Certificado(models.Model):
     def tamanho_titulo(self):
         t = len(self.titulo)
 
-        if t <= 12:
-            return self.titulo[0:12]
+        if t <= 120:
+            return self.titulo[0:120]
         else:
-            return self.titulo[0:9] + "..."
+            return self.titulo[0:117] + "..."
     
     def tamanho_autor(self):
         a = len(self.usuario.first_name + " " + self.usuario.last_name)
 
-        if a <= 11:
-            return (self.usuario.first_name + " " + self.usuario.last_name)[0:11]
+        if a <= 100:
+            return (self.usuario.first_name + " " + self.usuario.last_name)[0:100]
         else:
-            return (self.usuario.first_name + " " + self.usuario.last_name)[0:9] + "..."
+            return (self.usuario.first_name + " " + self.usuario.last_name)[0:97] + "..."
     
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
