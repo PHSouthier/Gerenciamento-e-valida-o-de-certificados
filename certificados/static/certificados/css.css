@@ -131,6 +131,39 @@
     }
 }
 
+@media only screen and (max-width: 900px) {
+    .form_center {
+        left: 12.5%;
+        width: 75%;
+    }
+}
+
+@media only screen and (max-width: 445px) {
+    .form-novoCertificado {
+        left: 17.0%;
+    }
+}
+
+@media only screen and (max-width: 400px) {
+    .form-novoCertificado {
+        width: 85%;
+        left: 9.0%;
+    }
+}
+
+@media only screen and (max-width: 367px) {
+    .form-novoCertificado {
+        width: 90%;
+        left: 3.0%;
+    }
+}
+
+@media only screen and (max-width: 340px) {
+    .form-novoCertificado {
+        left: 0.5%;
+    }
+}
+
 @media only screen and (max-width: 600px) {
     .form-horas {
         display: none;

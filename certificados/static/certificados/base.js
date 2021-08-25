@@ -6,7 +6,7 @@ function nome_user_encurtado() {
     if ((nome.length + sobrenome.length) > 8) {
         var string = `${nome} ${sobrenome}`
         arrayString = string.split("");
-        for(var i = 0; i < 8; i++) {
+        for(var i = 0; i < 30; i++) {
             stringEncurtada = stringEncurtada + arrayString[i]; 
         }
         div.innerHTML = `${stringEncurtada}...`;
