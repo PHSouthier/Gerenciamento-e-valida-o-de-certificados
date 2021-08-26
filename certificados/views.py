@@ -7,7 +7,11 @@ from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 
 def index(request):
-    lista_certificados = Certificado.objects.order_by("-data_envio")[0:10]
+    if request.user.is_superuser:
+        lista_certificados = Certificado.objects.order_by("-data_envio")[0:10]
+    else:
+        lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_envio")[0:10]
+    
     situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
     contexto = {'lista_certificados': lista_certificados, 'situacao':situacao}
     return render(request, 'certificados/index.html', contexto)
@@ -20,22 +24,46 @@ def mostrar_todos_certificados(request):
             operacao = form.cleaned_data['operacao']
 
             if operacao == "data_emissao":
-                lista_certificados = Certificado.objects.order_by("-data_emissao")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("-data_emissao")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_emissao")
             elif operacao == "autor":
-                lista_certificados = Certificado.objects.order_by("usuario")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("usuario")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("usuario")
             elif operacao == "data_envio":
-                lista_certificados = Certificado.objects.order_by("-data_envio")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("-data_envio")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_envio")
             elif operacao == "titulo":
-                lista_certificados = Certificado.objects.order_by("titulo")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("titulo")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("titulo")
             elif operacao == "horas":
-                lista_certificados = Certificado.objects.order_by("-horas")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("-horas")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-horas")
             elif operacao == "situacao":
-                lista_certificados = Certificado.objects.order_by("situacao")
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.order_by("situacao")
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("situacao")
             else:
-                lista_certificados = Certificado.objects.all()
+                if request.user.is_superuser:
+                    lista_certificados = Certificado.objects.all()
+                else:
+                    lista_certificados = Certificado.objects.filter(usuario=request.user)
     else:
         form = FormFiltro()
-        lista_certificados = Certificado.objects.all()
+        if request.user.is_superuser:
+            lista_certificados = Certificado.objects.all()
+        else:
+            lista_certificados = Certificado.objects.filter(usuario=request.user)
 
     formulario = "certificados"
     horas_aprovado = 0
@@ -101,10 +129,13 @@ def fazer_logout(request):
 
 def ver_certificado(request, id):
     c = Certificado.objects.get(id=id)
-    form = FormValidarCertificado()
-    situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
-    contexto = {'c': c, 'situacao': situacao, 'form': form}
-    return render(request, 'certificados/certificado.html', contexto)
+    if c.usuario == request.user or request.user.is_superuser:
+        form = FormValidarCertificado()
+        situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
+        contexto = {'c': c, 'situacao': situacao, 'form': form}
+        return render(request, 'certificados/certificado.html', contexto)
+    else:
+        return HttpResponseRedirect("/certificados/")
 
 def validar(request):
     operacao = ''
