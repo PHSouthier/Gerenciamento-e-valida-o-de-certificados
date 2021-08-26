@@ -1,0 +1,15 @@
+{% extends 'certificados/base.html' %}
+{% block conteudo %}
+
+    <h2 class="font-weight-light pb-3">{{titulo}}</h2>
+
+    {% if u %}
+        <div class="ver_certificado">
+            <p><span class="fw-bold">Nome: </span>{{nome}}</p>
+            <p><span class="fw-bold">E-mail: </span>{{email}}</p>
+        </div>   
+    {% else %}
+            <p> Usuario inexistente. </p>
+    {% endif %}
+
+{% endblock %}

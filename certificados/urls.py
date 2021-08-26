@@ -8,6 +8,8 @@ urlpatterns = [
     path('novo_certificado/', views.novo_certificado, name='novo_certificado'),
     path('validar/', views.validar, name='validar'),
     path('validar/<int:id>/', views.validar_certificado, name='validar_certificado'),
+    path('usuario/', views.perfil, name='perfil'),
+    path('usuario/<int:id>/', views.usuario, name='usuario'),
     path('login/', views.fazer_login, name='fazer_login'),
     path('logout/', views.fazer_logout, name='fazer_logout'),
 ]
