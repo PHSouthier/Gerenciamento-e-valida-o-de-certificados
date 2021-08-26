@@ -1,0 +1,41 @@
+{% extends 'certificados/base.html' %}
+{% load static %}
+{% block conteudo %}
+    <h3 class="font-weight-light pb-3">Certificados</h3>
+
+    {% if lista_usuarios %}
+        <div class="div_barra_pesquisa">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search lupa" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <input class="form-control barra_pesquisa_certificados" value="" type="search" id="barra_pesquisa" placeholder="Insira o nome do usuário">
+        </div>
+
+        <table class="table" style="margin-top: 32px;">
+            <form action="/certificados/usuarios/" method="POST">
+                <div class="forminvisivel">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <tr>
+                    <th> <input onclick="att_formFiltro('nome')" type="submit" class="linkFiltros fw-bold" id="submit_nome" value="Nome"><br> </th>
+                    <th> <input onclick="att_formFiltro('email')" type="submit" class="linkFiltros fw-bold" id="submit_email" value="E-mail"><br> </th>
+                </tr>
+            </form>
+
+            <div>
+                {% for u in lista_usuarios %}
+                    <tr id="tabela_{{u.id}}" style="display: normal;" class="elementos_tabela">
+                        <td class="break-word"><a id="nome_tabela_{{u.id}}" href="/certificados/usuario/{{u.id}}">{{u.first_name}} {{u.last_name}}</a></td>
+                        <td class="break-all">{{u.email}}</td>
+                    </tr>
+                {% endfor %}
+            </div>
+        </table>
+    
+    {% else %}
+        <p>Nenhum usuário cadastrado.</p>
+    {% endif %}
+
+    <script src="{% static 'certificados/usuarios.js'%}"></script>
+{% endblock %}

@@ -15,7 +15,11 @@
             </tr>
         {% for p in lista_certificados %}
             <tr id="tabela_{{p}}" style="display: normal;" class="elementos_tabela">
-                <td class="break-word">{{p.tamanho_autor}}</td>
+                {% if user.is_superuser %}
+                    <td class="break-word"><a href="/certificados/usuario/{{p.usuario.id}}">{{p.tamanho_autor}}</a></td>
+                {% else %}
+                    <td class="break-word">{{p.tamanho_autor}}</td>
+                {% endif %}
                 <td class="break-all" id="titulo_tabela_{{p}}"><a href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
                 <td class="form-horas"> {{p.horas}} </td>
                 <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>

@@ -202,6 +202,7 @@ def validar_certificado(request, id):
         return HttpResponseRedirect(f"/certificados/{id}")
 
     if certificados:
+        messages.success(request, "certificado validado com sucesso!")
         return HttpResponseRedirect("/certificados/validar/")
     else:
         messages.success(request, "Todos certificados já foram validados!")
@@ -218,11 +219,122 @@ def usuario(request, id):
     if request.user.is_authenticated:
         if request.user.id == id or request.user.is_superuser:
             u = UserModel.objects.get(id=id)
+            operacao = ''
+            if request.method == "POST":
+                form = FormFiltro(request.POST)
+                if form.is_valid():
+                    operacao = form.cleaned_data['operacao']
+
+                    if operacao == "data_emissao":
+                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_emissao")
+                    elif operacao == "data_envio":
+                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_envio")
+                    elif operacao == "titulo":
+                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("titulo")
+                    elif operacao == "horas":
+                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-horas")
+                    elif operacao == "situacao":
+                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("situacao")
+                    else:
+                            lista_certificados = Certificado.objects.filter(usuario=u)
+            else:
+                form = FormFiltro()
+                lista_certificados = Certificado.objects.filter(usuario=u)
+
+            formulario = "certificados"
+            horas_aprovado = 0
+            horas_pendente = 0
+            horas_recusado = 0
+            for p in lista_certificados:
+                if p.situacao == 1:
+                    horas_aprovado = horas_aprovado + p.horas
+                elif p.situacao == 2:
+                    horas_pendente = horas_pendente + p.horas
+                elif p.situacao == 3:
+                    horas_recusado = horas_recusado + p.horas
+
+            situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
             nome = u.first_name + u.last_name
             email = u.email
-            contexto = {'u': u, 'nome': nome, 'email': email}
+            contexto = {'u': u, 'nome': nome, 'email': email, 'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'horas_aprovado': horas_aprovado, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado, 'formulario': formulario}
             return render(request, 'certificados/perfil.html', contexto)
         else:
             return HttpResponseRedirect("/certificados/")
     else:
         return HttpResponseRedirect("/certificados/login/")
+
+def ver_usuarios(request):
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
+            if request.method == "POST":
+                operacao = ''
+                form = FormFiltro(request.POST)
+                if form.is_valid():
+                    operacao = form.cleaned_data['operacao']
+
+                    if operacao == "nome":
+                            lista_usuarios = UserModel.objects.order_by("first_name")
+                    elif operacao == "email":
+                            lista_usuarios = UserModel.objects.order_by("email")
+                    else:
+                            lista_usuarios = UserModel.objects.all()
+            else:
+                form = FormFiltro()
+                lista_usuarios = UserModel.objects.all()
+
+            contexto = {'lista_usuarios': lista_usuarios, 'form': form}
+            return render(request, 'certificados/usuarios.html', contexto)
+        else:
+            return HttpResponseRedirect("/certificados/")
+    else:
+        return HttpResponseRedirect("/certificados/login/")
+
+def ver_certificado_usuario(request, id, id2):
+    c = Certificado.objects.get(id=id2)
+    u = UserModel.objects.get(id=id)
+    if c.usuario == request.user or request.user.is_superuser:
+        form = FormValidarCertificado()
+        situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
+        contexto = {'c': c, 'u':u, 'situacao': situacao, 'form': form}
+        return render(request, 'certificados/certificadoUsuario.html', contexto)
+    else:
+        return HttpResponseRedirect("/certificados/")
+
+def validar_certificado_usuario(request, id, id2):
+    operacao = ''
+    u = UserModel.objects.get(id=id)
+    certificados = Certificado.objects.filter(usuario=u)
+    certificados = certificados.filter(situacao=2)
+    certificados = certificados.order_by("id")[0:1]
+    if request.method == "POST":
+        form = FormValidarCertificado(request.POST)
+        if form.is_valid():
+            c = Certificado.objects.get(id=id2)
+            operacao = form.cleaned_data['operacao']
+
+            if operacao == "recusar":
+                c.situacao = 3
+                c.save()
+            elif operacao == "aprovar":
+                c.situacao = 1
+                c.save()
+            elif operacao == "aprovar-proximo":
+                c.situacao = 1
+                c.save()
+                if certificados:
+                    proximo = Certificado.objects.get(id=certificados)
+                    return HttpResponseRedirect(f"/certificados/usuario/{u.id}/certificado/{proximo.id}")
+                else:
+                    messages.success(request, "Todos certificados deste usuário já foram validados!")
+                    return HttpResponseRedirect(f"/certificados/usuario/{u.id}")
+            else:
+                return HttpResponseRedirect(f"/certificados/usuario/{u.id}/certificado/{id}")
+    else:
+        return HttpResponseRedirect(f"/certificados/usuario/{u.id}/certificado/{id}")
+
+    if certificados:
+        messages.success(request, "certificado validado com sucesso!")
+        return HttpResponseRedirect(f"/certificados/usuario/{u.id}/")
+    else:
+        messages.success(request, "Todos certificados deste usuário já foram validados!")
+        return HttpResponseRedirect(f"/certificados/usuario/{u.id}/")

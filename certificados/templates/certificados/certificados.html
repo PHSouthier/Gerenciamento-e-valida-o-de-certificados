@@ -1,53 +1,57 @@
 {% extends 'certificados/base.html' %}
 {% load static %}
-{% block conteudo%}
+{% block conteudo %}
     <h3 class="font-weight-light pb-3">Certificados</h3>
 
     {% if lista_certificados %}
-    <div class="div_barra_pesquisa">
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search lupa" viewBox="0 0 16 16">
-            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-        </svg>
-        <input class="form-control barra_pesquisa_certificados" value="" type="search" id="barra_pesquisa" placeholder="Insira o título do certificado">
-    </div>
-
-    <table class="table" style="margin-top: 32px;">
-        <form action="/certificados/{% if formulario == 'certificados' %}todos{% else %}validar{% endif %}/" method="POST">
-            <div class="forminvisivel">
-                {% csrf_token %}
-                {{ form.as_p }}
-            </div>
-            <tr>
-                <th> <input onclick="att_formFiltro('autor')" type="submit" class="linkFiltros fw-bold" id="submit_autor" value="Autor"><br> </th>
-                <th> <input onclick="att_formFiltro('titulo')" type="submit" class="linkFiltros fw-bold" id="submit_titulo" value="Título"><br> </th>
-                <th class="form-horas"> <input onclick="att_formFiltro('horas')" type="submit" class="linkFiltros fw-bold" id="submit_horas" value="Horas"><br> </th>
-                <th class="form-data-emissao"> <input onclick="att_formFiltro('data_emissao')" type="submit" class="linkFiltros fw-bold" id="submit_data_emissao" value="Data de Emissão"><br> </th>
-                <th> <input onclick="att_formFiltro('data_envio')" type="submit" class="linkFiltros fw-bold" id="submit_data_envio" value="Data de Envio"><br> </th>
-                <th class="form-situacao"> <input onclick="att_formFiltro('situacao')" type="submit" class="linkFiltros fw-bold" id="submit_situacao" value="Situação"><br> </th>
-            </tr>
-        </form>
-
-        <div>
-            {% for p in lista_certificados %}
-                <tr id="tabela_{{p}}" style="display: normal;" class="elementos_tabela">
-                    <td class="break-word">{{p.tamanho_autor}}</td>
-                    <td class="break-all"><a id="titulo_tabela_{{p}}" href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
-                    <td class="form-horas"> {{p.horas}} </td>
-                    <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>
-                    <td> {{p.data_envio|date:'d M. Y'}} </td>
-                    {% if p.situacao == 1 %}
-                        <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_aprovado"> {{situacao.0}} </span></td>
-                    {% elif p.situacao == 2 %}
-                        <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_pendente"> {{situacao.1}} </span></td>
-                    {% elif p.situacao == 3 %}
-                        <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_recusado"> {{situacao.2}} </span></td>
-                    {% else %}
-                        <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></td>
-                    {% endif %}
-                </tr>
-            {% endfor %}
+        <div class="div_barra_pesquisa">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-search lupa" viewBox="0 0 16 16">
+                <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+            </svg>
+            <input class="form-control barra_pesquisa_certificados" value="" type="search" id="barra_pesquisa" placeholder="Insira o título do certificado">
         </div>
-    </table>
+
+        <table class="table" style="margin-top: 32px;">
+            <form action="/certificados/{% if formulario == 'certificados' %}todos{% else %}validar{% endif %}/" method="POST">
+                <div class="forminvisivel">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <tr>
+                    <th> <input onclick="att_formFiltro('autor')" type="submit" class="linkFiltros fw-bold" id="submit_autor" value="Autor"><br> </th>
+                    <th> <input onclick="att_formFiltro('titulo')" type="submit" class="linkFiltros fw-bold" id="submit_titulo" value="Título"><br> </th>
+                    <th class="form-horas"> <input onclick="att_formFiltro('horas')" type="submit" class="linkFiltros fw-bold" id="submit_horas" value="Horas"><br> </th>
+                    <th class="form-data-emissao"> <input onclick="att_formFiltro('data_emissao')" type="submit" class="linkFiltros fw-bold" id="submit_data_emissao" value="Data de Emissão"><br> </th>
+                    <th> <input onclick="att_formFiltro('data_envio')" type="submit" class="linkFiltros fw-bold" id="submit_data_envio" value="Data de Envio"><br> </th>
+                    <th class="form-situacao"> <input onclick="att_formFiltro('situacao')" type="submit" class="linkFiltros fw-bold" id="submit_situacao" value="Situação"><br> </th>
+                </tr>
+            </form>
+
+            <div>
+                {% for p in lista_certificados %}
+                    <tr id="tabela_{{p}}" style="display: normal;" class="elementos_tabela">
+                        {% if user.is_superuser %}
+                            <td class="break-word"><a href="/certificados/usuario/{{p.usuario.id}}">{{p.tamanho_autor}}</a></td>
+                        {% else %}
+                            <td class="break-word">{{p.tamanho_autor}}</td>
+                        {% endif %}
+                        <td class="break-all"><a id="titulo_tabela_{{p}}" href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
+                        <td class="form-horas"> {{p.horas}} </td>
+                        <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>
+                        <td> {{p.data_envio|date:'d M. Y'}} </td>
+                        {% if p.situacao == 1 %}
+                            <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_aprovado"> {{situacao.0}} </span></td>
+                        {% elif p.situacao == 2 %}
+                            <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_pendente"> {{situacao.1}} </span></td>
+                        {% elif p.situacao == 3 %}
+                            <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_recusado"> {{situacao.2}} </span></td>
+                        {% else %}
+                            <td class="form-situacao"><span id="situacao_{{p}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </div>
+        </table>
     
     {% else %}
         <p>Nenhum certificado cadastrado.</p>
