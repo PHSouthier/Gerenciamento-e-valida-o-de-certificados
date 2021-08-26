@@ -6,7 +6,7 @@ class Certificado(models.Model):
     titulo = models.CharField(max_length=150)
     data_emissao = models.DateTimeField()
     data_envio = models.DateTimeField(default=timezone.now)
-    situacao = models.SmallIntegerField()
+    situacao = models.SmallIntegerField(default = 2)
     imagem = models.ImageField(upload_to = 'certificados/', default = "certificados/padrao.png")
     usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)

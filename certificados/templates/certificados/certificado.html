@@ -2,28 +2,43 @@
 {% block conteudo %}
     <h2 class="font-weight-light pb-3">{{titulo}}</h2>
 
-{% if c %}
-    <center>
-        <img src="{{ c.imagem.url }}" class="img-fluid img-thumbnail imagem">
-        <br><br>
-    </center>
-    <div class="ver_certificado">
-        <p><span class="fw-bold">Título: </span>{{c.titulo}}</p>
-        <p><span class="fw-bold">Horas: </span>{{c.horas}}</p>
-        <p><span class="fw-bold">Data de Emissão: </span>{{c.data_emissao|date:'d M. Y'}}</p>
-        <p><span class="fw-bold">Data de Envio: </span>{{c.data_envio|date:'d M. Y'}}</p>
-        {% if c.situacao == 1 %}
-            <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_aprovado"> {{situacao.0}} </span></p>
-        {% elif c.situacao == 2 %}
-            <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_pendente"> {{situacao.1}} </span></p>
-        {% elif c.situacao == 3 %}
-            <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_recusado"> {{situacao.2}} </span></p>
-        {% else %}
-            <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></p>
-        {% endif %}
-    </div>    
+    {% if c %}
+        <center>
+            <img src="{{ c.imagem.url }}" class="img-fluid img-thumbnail imagem">
+            <br><br>
+        </center>
+        <div class="ver_certificado">
+            <p><span class="fw-bold">Título: </span>{{c.titulo}}</p>
+            <p><span class="fw-bold">Horas: </span>{{c.horas}}</p>
+            <p><span class="fw-bold">Data de Emissão: </span>{{c.data_emissao|date:'d M. Y'}}</p>
+            <p><span class="fw-bold">Data de Envio: </span>{{c.data_envio|date:'d M. Y'}}</p>
+            {% if c.situacao == 1 %}
+                <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_aprovado"> {{situacao.0}} </span></p>
+            {% elif c.situacao == 2 %}
+                <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_pendente"> {{situacao.1}} </span></p>
+            {% elif c.situacao == 3 %}
+                <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_recusado"> {{situacao.2}} </span></p>
+            {% else %}
+                <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></p>
+            {% endif %}
+        </div>    
 
-{% else %}
-        <p> Certificado inexistente. </p>
-{% endif %}
+    {% else %}
+            <p> Certificado inexistente. </p>
+    {% endif %}
+
+    {% if user.is_superuser %}
+            <form action="/certificados/validar/{{ c.id }}/" method="POST">
+                <div class="forminvisivel">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                </div>
+                <div class="botoes-Vercertificado">
+                    <button onclick="att_formValidarCertificado('recusar')" type="submit" class="btn btn-danger">Recusar</button>
+                    <button onclick="att_formValidarCertificado('aprovar')" type="submit" class="btn btn-success">Aprovar</button>
+                    <button onclick="att_formValidarCertificado('aprovar-proximo')" type="submit" class="btn btn-primary">Aprovar e ver próximo</button>
+                </div>
+            </form><br><br>
+    {% endif%}
+
 {% endblock %}

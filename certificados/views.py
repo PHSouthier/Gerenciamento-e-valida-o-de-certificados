@@ -1,5 +1,5 @@
 from django.contrib import messages
-from certificados.forms import FormCertificado, FormFiltro, FormLogin
+from certificados.forms import FormCertificado, FormFiltro, FormLogin, FormValidarCertificado
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
 from .models import Certificado
@@ -13,7 +13,6 @@ def index(request):
     return render(request, 'certificados/index.html', contexto)
 
 def mostrar_todos_certificados(request):
-    resultado = ''
     operacao = ''
     if request.method == "POST":
         form = FormFiltro(request.POST)
@@ -38,6 +37,7 @@ def mostrar_todos_certificados(request):
         form = FormFiltro()
         lista_certificados = Certificado.objects.all()
 
+    formulario = "certificados"
     horas_aprovado = 0
     horas_pendente = 0
     horas_recusado = 0
@@ -50,7 +50,7 @@ def mostrar_todos_certificados(request):
             horas_recusado = horas_recusado + p.horas
 
     situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
-    contexto = {'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'horas_aprovado': horas_aprovado, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado, 'resultado': resultado, 'operacao': operacao}
+    contexto = {'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'horas_aprovado': horas_aprovado, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado, 'formulario': formulario}
     return render(request, 'certificados/certificados.html', contexto)
 
 def novo_certificado(request):
@@ -97,10 +97,74 @@ def fazer_login(request):
 
 def fazer_logout(request):
     logout(request)
-    return HttpResponseRedirect("/certificados/")
+    return HttpResponseRedirect("/certificados/login/")
 
 def ver_certificado(request, id):
     c = Certificado.objects.get(id=id)
+    form = FormValidarCertificado()
     situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
-    contexto = {'c': c, 'situacao': situacao}
+    contexto = {'c': c, 'situacao': situacao, 'form': form}
     return render(request, 'certificados/certificado.html', contexto)
+
+def validar(request):
+    operacao = ''
+    if request.method == "POST":
+        form = FormFiltro(request.POST)
+        if form.is_valid():
+            operacao = form.cleaned_data['operacao']
+
+            if operacao == "data_emissao":
+                lista_certificados = Certificado.objects.order_by("-data_emissao").filter(situacao=2)
+            elif operacao == "autor":
+                lista_certificados = Certificado.objects.order_by("usuario").filter(situacao=2)
+            elif operacao == "data_envio":
+                lista_certificados = Certificado.objects.order_by("-data_envio").filter(situacao=2)
+            elif operacao == "titulo":
+                lista_certificados = Certificado.objects.order_by("titulo").filter(situacao=2)
+            elif operacao == "horas":
+                lista_certificados = Certificado.objects.order_by("-horas").filter(situacao=2)
+            else:
+                lista_certificados = Certificado.objects.filter(situacao=2)
+    else:
+        form = FormFiltro()
+        lista_certificados = Certificado.objects.filter(situacao=2)
+
+    formulario = "validar"
+    situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
+    contexto = {'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'formulario': formulario}
+    return render(request, 'certificados/certificados.html', contexto)
+
+def validar_certificado(request, id):
+    operacao = ''
+    certificados = Certificado.objects.filter(situacao=2).order_by("id")[0:1]
+    if request.method == "POST":
+        form = FormValidarCertificado(request.POST)
+        if form.is_valid():
+            c = Certificado.objects.get(id=id)
+            operacao = form.cleaned_data['operacao']
+
+            if operacao == "recusar":
+                c.situacao = 3
+                c.save()
+            elif operacao == "aprovar":
+                c.situacao = 1
+                c.save()
+            elif operacao == "aprovar-proximo":
+                c.situacao = 1
+                c.save()
+                if certificados:
+                    proximo = Certificado.objects.get(id=certificados)
+                    return HttpResponseRedirect(f"/certificados/{proximo.id}")
+                else:
+                    messages.success(request, "Todos certificados já foram validados!")
+                    return HttpResponseRedirect("/certificados/")
+            else:
+                return HttpResponseRedirect(f"/certificados/{id}")
+    else:
+        return HttpResponseRedirect(f"/certificados/{id}")
+
+    if certificados:
+        return HttpResponseRedirect("/certificados/validar/")
+    else:
+        messages.success(request, "Todos certificados já foram validados!")
+        return HttpResponseRedirect("/certificados/")

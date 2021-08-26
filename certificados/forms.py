@@ -7,10 +7,13 @@ from django import forms
 class FormFiltro(forms.Form):
     operacao = forms.CharField()
 
+class FormValidarCertificado(forms.Form):
+    operacao = forms.CharField()
+
 class FormCertificado(forms.ModelForm):
     class Meta:
         model = Certificado
-        fields = ['titulo', 'horas', 'data_emissao', 'categoria', 'situacao', 'imagem']
+        fields = ['titulo', 'horas', 'data_emissao', 'categoria', 'imagem']
 
 class FormLogin(forms.Form):
     usuario = forms.CharField(label='Usuário', max_length=20)

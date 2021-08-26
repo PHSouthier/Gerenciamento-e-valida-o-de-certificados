@@ -67,11 +67,24 @@
 }
 
 .ver_certificado {
-    position: absolute;
+    position: relative;
     left: 50%;
     transform: translate(-50%, 0);
-    max-width: 90%;
+    max-width: 40%;
+    min-width: 25%;
     word-break: break-all;
+}
+
+.botoes-Vercertificado {
+    display: grid;
+    grid-template-columns: 32% 32% 32%;
+    max-width: 40%;
+    min-width: 25%;
+    margin-top: 20px;
+    grid-gap: 0px 1.33%;
+    position: relative;
+    left: 50%;
+    transform: translate(-50%, 0);
 }
 
 .break-all {
