@@ -28,6 +28,7 @@
     {% endif %}
 
     {% if user.is_superuser %}
+        {% if user.perfil.curso == c.curso %}
             <form action="/certificados/validar/{{ c.id }}/" method="POST">
                 <div class="forminvisivel">
                     {% csrf_token %}
@@ -39,6 +40,7 @@
                     <button onclick="att_formValidarCertificado('aprovar-proximo')" type="submit" class="btn btn-primary">Aprovar e ver próximo</button>
                 </div>
             </form><br><br>
+        {% endif %}
     {% endif%}
 
 {% endblock %}

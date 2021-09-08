@@ -1,3 +1,4 @@
+from django.contrib.auth.backends import UserModel
 from django.db import models
 from django.utils import timezone
 
@@ -10,6 +11,7 @@ class Certificado(models.Model):
     imagem = models.ImageField(upload_to = 'certificados/', default = "certificados/padrao.png")
     usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
+    curso = models.ForeignKey('Curso', on_delete=models.CASCADE)
 
     def __str__(self):
         return self.titulo + " (" + str(self.id) + ")"
@@ -33,6 +35,23 @@ class Certificado(models.Model):
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)
     limite_horas = models.IntegerField()
-
+    curso = models.ForeignKey('Curso', on_delete=models.CASCADE)
+    
     def __str__(self):
         return self.nome + " (" + str(self.limite_horas) + ")"
+
+class Curso(models.Model):
+    nome = models.CharField(max_length=100)
+    quantidade_horas = models.IntegerField()
+
+    def __str__(self):
+        return self.nome + " (" + str(self.quantidade_horas) + ")"
+
+class Perfil(models.Model):
+    user = models.OneToOneField('auth.User', on_delete=models.CASCADE)
+    matricula = models.IntegerField()
+    turma = models.IntegerField()
+    curso = models.ForeignKey('Curso', on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user.first_name + " " + self.user.last_name

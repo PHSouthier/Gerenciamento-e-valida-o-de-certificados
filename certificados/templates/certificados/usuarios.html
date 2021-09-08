@@ -1,7 +1,7 @@
 {% extends 'certificados/base.html' %}
 {% load static %}
 {% block conteudo %}
-    <h3 class="font-weight-light pb-3">Certificados</h3>
+    <h3 class="font-weight-light pb-3">Usuários</h3>
 
     {% if lista_usuarios %}
         <div class="div_barra_pesquisa">
@@ -20,6 +20,7 @@
                 <tr>
                     <th> <input onclick="att_formFiltro('nome')" type="submit" class="linkFiltros fw-bold" id="submit_nome" value="Nome"><br> </th>
                     <th> <input onclick="att_formFiltro('email')" type="submit" class="linkFiltros fw-bold" id="submit_email" value="E-mail"><br> </th>
+                    <th> <input onclick="att_formFiltro('curso')" type="submit" class="linkFiltros fw-bold" id="submit_curso" value="Curso"><br> </th>
                 </tr>
             </form>
 
@@ -28,6 +29,7 @@
                     <tr id="tabela_{{u.id}}" style="display: normal;" class="elementos_tabela">
                         <td class="break-word"><a id="nome_tabela_{{u.id}}" href="/certificados/usuario/{{u.id}}">{{u.first_name}} {{u.last_name}}</a></td>
                         <td class="break-all">{{u.email}}</td>
+                        <td class="break-all">{{u.perfil.curso}}</td>
                     </tr>
                 {% endfor %}
             </div>

@@ -36,8 +36,22 @@
 
 .form_center {
     position: relative;
-    width: 50%;
-    left: 25.0%;
+    width: 50vw;
+    left: 25vw;
+}
+
+.form-login {
+    position: relative;
+    top: 50vh;
+    transform: translate(0%, -50%);
+    border: 1px solid transparent;
+    background-color: white;
+    border-radius: 8px;
+    padding: 35px 35px 15px 35px;
+}
+
+.body-login {
+    background-color: #eee;
 }
 
 .fazer_modal {

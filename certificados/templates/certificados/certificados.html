@@ -58,11 +58,13 @@
     {% endif %}
     
     {% if formulario == 'certificados' %}
-        <p>
-            Horas aprovadas: <span class="fw-bold situacao_aprovado">{{horas_aprovado}}</span><br>
-            Horas pendentes: <span class="fw-bold situacao_pendente">{{horas_pendente}}</span><br>
-            Horas recusadas: <span class="fw-bold situacao_recusado">{{horas_recusado}}</span><br>
-        </p>
+        {% if not user.is_superuser %}
+            <p>
+                Horas aprovadas: <span class="fw-bold situacao_aprovado">{{horas_aprovado}}</span><br>
+                Horas pendentes: <span class="fw-bold situacao_pendente">{{horas_pendente}}</span><br>
+                Horas recusadas: <span class="fw-bold situacao_recusado">{{horas_recusado}}</span><br>
+            </p>
+        {% endif %}
     {% endif %}
 
     <script src="{% static 'certificados/certificados.js'%}"></script>

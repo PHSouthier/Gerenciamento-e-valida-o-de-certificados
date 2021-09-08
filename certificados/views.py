@@ -10,7 +10,7 @@ from django.utils import timezone
 def index(request):
     if request.user.is_authenticated:
         if request.user.is_superuser:
-            lista_certificados = Certificado.objects.order_by("-data_envio")[0:10]
+            lista_certificados = Certificado.objects.order_by("-data_envio").filter(curso=request.user.perfil.curso)[0:10]
         else:
             lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_envio")[0:10]
         
@@ -30,43 +30,43 @@ def mostrar_todos_certificados(request):
 
                 if operacao == "data_emissao":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("-data_emissao")
+                        lista_certificados = Certificado.objects.order_by("-data_emissao").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_emissao")
                 elif operacao == "autor":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("usuario")
+                        lista_certificados = Certificado.objects.order_by("usuario").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("usuario")
                 elif operacao == "data_envio":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("-data_envio")
+                        lista_certificados = Certificado.objects.order_by("-data_envio").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_envio")
                 elif operacao == "titulo":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("titulo")
+                        lista_certificados = Certificado.objects.order_by("titulo").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("titulo")
                 elif operacao == "horas":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("-horas")
+                        lista_certificados = Certificado.objects.order_by("-horas").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-horas")
                 elif operacao == "situacao":
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.order_by("situacao")
+                        lista_certificados = Certificado.objects.order_by("situacao").filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("situacao")
                 else:
                     if request.user.is_superuser:
-                        lista_certificados = Certificado.objects.all()
+                        lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso)
                     else:
                         lista_certificados = Certificado.objects.filter(usuario=request.user)
         else:
             form = FormFiltro()
             if request.user.is_superuser:
-                lista_certificados = Certificado.objects.all()
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso)
             else:
                 lista_certificados = Certificado.objects.filter(usuario=request.user)
 
@@ -89,22 +89,26 @@ def mostrar_todos_certificados(request):
         return HttpResponseRedirect("/certificados/login/")
 
 def novo_certificado(request):
-    if request.method == 'POST':
-        form = FormCertificado(request.POST, request.FILES)
-        if form.is_valid():
-            c = form.save(commit=False)
-            c.usuario = request.user
-            c.save()
+    if not request.user.is_superuser:
+        if request.method == 'POST':
+            form = FormCertificado(request.POST, request.FILES, user=request.user)
+            if form.is_valid():
+                c = form.save(commit=False)
+                c.usuario = request.user
+                c.curso = request.user.perfil.curso
+                c.save()
 
-            messages.success(request, "O certificado foi salvo com sucesso!")
-            return HttpResponseRedirect('/certificados/novo_certificado/')
+                messages.success(request, "O certificado foi salvo com sucesso!")
+                return HttpResponseRedirect('/certificados/novo_certificado/')
+            else:
+                messages.error(request, "Preencha corretamente o formulário.")
         else:
-            messages.error(request, "Preencha corretamente o formulário.")
+            form = FormCertificado(user=request.user)
+
+        contexto = {'form': form}
+        return render(request, 'certificados/novo_certificado.html', contexto)
     else:
-        form = FormCertificado()
-    
-    contexto = {'form': form}
-    return render(request, 'certificados/novo_certificado.html', contexto)
+        return HttpResponseRedirect('/certificados/')
 
 def fazer_login(request):
     if request.user.is_authenticated:
@@ -152,20 +156,20 @@ def validar(request):
             operacao = form.cleaned_data['operacao']
 
             if operacao == "data_emissao":
-                lista_certificados = Certificado.objects.order_by("-data_emissao").filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).order_by("-data_emissao").filter(situacao=2)
             elif operacao == "autor":
-                lista_certificados = Certificado.objects.order_by("usuario").filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).order_by("usuario").filter(situacao=2)
             elif operacao == "data_envio":
-                lista_certificados = Certificado.objects.order_by("-data_envio").filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).order_by("-data_envio").filter(situacao=2)
             elif operacao == "titulo":
-                lista_certificados = Certificado.objects.order_by("titulo").filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).order_by("titulo").filter(situacao=2)
             elif operacao == "horas":
-                lista_certificados = Certificado.objects.order_by("-horas").filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).order_by("-horas").filter(situacao=2)
             else:
-                lista_certificados = Certificado.objects.filter(situacao=2)
+                lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).filter(situacao=2)
     else:
         form = FormFiltro()
-        lista_certificados = Certificado.objects.filter(situacao=2)
+        lista_certificados = Certificado.objects.filter(curso=request.user.perfil.curso).filter(situacao=2)
 
     formulario = "validar"
     situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
@@ -173,40 +177,49 @@ def validar(request):
     return render(request, 'certificados/certificados.html', contexto)
 
 def validar_certificado(request, id):
-    operacao = ''
-    certificados = Certificado.objects.filter(situacao=2).order_by("id")[0:1]
-    if request.method == "POST":
-        form = FormValidarCertificado(request.POST)
-        if form.is_valid():
+    if request.user.is_authenticated:
+        if request.user.is_superuser:
             c = Certificado.objects.get(id=id)
-            operacao = form.cleaned_data['operacao']
+            if request.user.perfil.curso == c.curso:
+                operacao = ''
+                certificados = Certificado.objects.filter(curso=request.user.perfil.curso).filter(situacao=2).order_by("id")[0:1]
+                if request.method == "POST":
+                    form = FormValidarCertificado(request.POST)
+                    if form.is_valid():
+                        operacao = form.cleaned_data['operacao']
 
-            if operacao == "recusar":
-                c.situacao = 3
-                c.save()
-            elif operacao == "aprovar":
-                c.situacao = 1
-                c.save()
-            elif operacao == "aprovar-proximo":
-                c.situacao = 1
-                c.save()
+                        if operacao == "recusar":
+                            c.situacao = 3
+                            c.save()
+                        elif operacao == "aprovar":
+                            c.situacao = 1
+                            c.save()
+                        elif operacao == "aprovar-proximo":
+                            c.situacao = 1
+                            c.save()
+                            if certificados:
+                                proximo = Certificado.objects.get(id=certificados)
+                                return HttpResponseRedirect(f"/certificados/{proximo.id}")
+                            else:
+                                messages.success(request, "Todos certificados já foram validados!")
+                                return HttpResponseRedirect("/certificados/")
+                        else:
+                            return HttpResponseRedirect(f"/certificados/{id}")
+                else:
+                    return HttpResponseRedirect(f"/certificados/{id}")
+
                 if certificados:
-                    proximo = Certificado.objects.get(id=certificados)
-                    return HttpResponseRedirect(f"/certificados/{proximo.id}")
+                    messages.success(request, "Certificado validado com sucesso!")
+                    return HttpResponseRedirect("/certificados/validar/")
                 else:
                     messages.success(request, "Todos certificados já foram validados!")
-                    return HttpResponseRedirect("/certificados/")
+                    return HttpResponseRedirect("/certificados/validar/")
             else:
                 return HttpResponseRedirect(f"/certificados/{id}")
+        else:
+            return HttpResponseRedirect("/certificados/")
     else:
-        return HttpResponseRedirect(f"/certificados/{id}")
-
-    if certificados:
-        messages.success(request, "certificado validado com sucesso!")
-        return HttpResponseRedirect("/certificados/validar/")
-    else:
-        messages.success(request, "Todos certificados já foram validados!")
-        return HttpResponseRedirect("/certificados/")
+        return HttpResponseRedirect("/certificados/login/")
 
 def perfil(request):
     if request.user.is_authenticated:
@@ -226,17 +239,17 @@ def usuario(request, id):
                     operacao = form.cleaned_data['operacao']
 
                     if operacao == "data_emissao":
-                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_emissao")
+                        lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_emissao")
                     elif operacao == "data_envio":
-                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_envio")
+                        lista_certificados = Certificado.objects.filter(usuario=u).order_by("-data_envio")
                     elif operacao == "titulo":
-                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("titulo")
+                        lista_certificados = Certificado.objects.filter(usuario=u).order_by("titulo")
                     elif operacao == "horas":
-                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("-horas")
+                        lista_certificados = Certificado.objects.filter(usuario=u).order_by("-horas")
                     elif operacao == "situacao":
-                            lista_certificados = Certificado.objects.filter(usuario=u).order_by("situacao")
+                        lista_certificados = Certificado.objects.filter(usuario=u).order_by("situacao")
                     else:
-                            lista_certificados = Certificado.objects.filter(usuario=u)
+                        lista_certificados = Certificado.objects.filter(usuario=u)
             else:
                 form = FormFiltro()
                 lista_certificados = Certificado.objects.filter(usuario=u)
@@ -273,11 +286,13 @@ def ver_usuarios(request):
                     operacao = form.cleaned_data['operacao']
 
                     if operacao == "nome":
-                            lista_usuarios = UserModel.objects.order_by("first_name")
+                        lista_usuarios = UserModel.objects.order_by("first_name")
                     elif operacao == "email":
-                            lista_usuarios = UserModel.objects.order_by("email")
+                        lista_usuarios = UserModel.objects.order_by("email")
+                    elif operacao == "curso":
+                        lista_usuarios = UserModel.objects.order_by('perfil__curso')
                     else:
-                            lista_usuarios = UserModel.objects.all()
+                        lista_usuarios = UserModel.objects.all()
             else:
                 form = FormFiltro()
                 lista_usuarios = UserModel.objects.all()
@@ -303,9 +318,7 @@ def ver_certificado_usuario(request, id, id2):
 def validar_certificado_usuario(request, id, id2):
     operacao = ''
     u = UserModel.objects.get(id=id)
-    certificados = Certificado.objects.filter(usuario=u)
-    certificados = certificados.filter(situacao=2)
-    certificados = certificados.order_by("id")[0:1]
+    certificados = Certificado.objects.filter(usuario=u, situacao=2).order_by("id")[0:1]
     if request.method == "POST":
         form = FormValidarCertificado(request.POST)
         if form.is_valid():
