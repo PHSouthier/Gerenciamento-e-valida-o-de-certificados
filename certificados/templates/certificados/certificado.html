@@ -4,8 +4,13 @@
 
     {% if c %}
         <center>
-            <img src="{{ c.imagem.url }}" class="img-fluid img-thumbnail imagem">
-            <br><br>
+            {% if c.pdf %}
+                <a href="{{ c.imagem.url }}" target="_blank" rel="noopener noreferrer">Ver PDF do certificado</a>
+                <iframe src="{{ c.imagem.url }}" width="50%" height="500px"></iframe>
+            {% else %}
+                <a href="{{ c.imagem.url }}"><img src="{{ c.imagem.url }}" class="img-fluid img-thumbnail imagem"></a>
+                <br><br>
+            {% endif %}
         </center>
         <div class="ver_certificado">
             <p><span class="fw-bold">Título: </span>{{c.titulo}}</p>
@@ -22,22 +27,31 @@
                 <p><span class="fw-bold">Situação: </span><span id="situacao_{{c}}" class="fw-bold situacao_erro"> {{situacao.3}} </span></p>
             {% endif %}
         </div>    
-
+            
     {% else %}
             <p> Certificado inexistente. </p>
     {% endif %}
 
-    {% if user.is_superuser %}
+    {% if user.is_superuser or userDeletar %}
         {% if user.perfil.curso == c.curso %}
-            <form action="/certificados/validar/{{ c.id }}/" method="POST">
+            {% if link == 'ver-certificado' %}
+                <form action="/certificados/validar/{{ c.id }}/" method="POST" id="form-certificado">
+            {% elif link == 'ver-certificado-usuario' %}
+                <form action="/certificados/usuario/{{u.id}}/certificado/validar/{{c.id}}/" method="POST" id="form-certificado">
+            {% else%}
+                <form action="/certificados/validar/{{ c.id }}/" method="POST" id="form-certificado">
+            {% endif %}
                 <div class="forminvisivel">
                     {% csrf_token %}
                     {{ form.as_p }}
                 </div>
                 <div class="botoes-Vercertificado">
-                    <button onclick="att_formValidarCertificado('recusar')" type="submit" class="btn btn-danger">Recusar</button>
-                    <button onclick="att_formValidarCertificado('aprovar')" type="submit" class="btn btn-success">Aprovar</button>
-                    <button onclick="att_formValidarCertificado('aprovar-proximo')" type="submit" class="btn btn-primary">Aprovar e ver próximo</button>
+                    {% if user.is_superuser %}
+                        <button onclick="att_formValidarCertificado('aprovar')" type="submit" class="btn btn-success">Aprovar</button>
+                        <button onclick="att_formValidarCertificado('recusar')" type="submit" class="btn btn-secondary">Recusar</button>
+                        <button onclick="att_formValidarCertificado('aprovar-proximo')" type="submit" class="btn btn-primary">Aprovar e ver próximo</button>
+                    {% endif %}
+                    <button onclick="deletar_certificado()" class="btn btn-danger">Deletar</button>
                 </div>
             </form><br><br>
         {% endif %}

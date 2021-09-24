@@ -30,21 +30,27 @@
                     <li class="nav-item">
                         <a class="nav-link" aria-current="page" href="/certificados/">Início</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/certificados/novo_certificado">Novo</a>
-                    </li>
+                    {% if not request.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/certificados/novo_certificado">Novo</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item">
                         <a class="nav-link" href="/certificados/todos">Certificados</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/certificados/validar">Validar</a>
-                    </li>
+                    {% if request.user.is_superuser %}
+                        <li class="nav-item">
+                            <a class="nav-link" href="/certificados/validar">Validar</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item menu-perfil">
                         <a class="nav-link" href="/certificados/usuario">Veja seu perfil</a>
                     </li>
-                    <li class="nav-item menu-perfil">
-                        <a class="nav-link" href="/certificados/usuarios">Buscar usuários</a>
-                    </li>
+                    {% if request.user.is_superuser %}
+                        <li class="nav-item menu-perfil">
+                            <a class="nav-link" href="/certificados/usuarios">Buscar usuários</a>
+                        </li>
+                    {% endif %}
                     <li class="nav-item menu-perfil">
                         <a class="nav-link" href="/certificados/logout">Sair</a>
                     </li>
@@ -63,9 +69,11 @@
                     <path fill-rule="evenodd" d="M0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8zm8-7a7 7 0 0 0-5.468 11.37C3.242 11.226 4.805 10 8 10s4.757 1.225 5.468 2.37A7 7 0 0 0 8 1z"/>
                 </svg>
                 <div class="dropdown-menu dropdown-perfil-menu" aria-labelledby="navbarDropdown">
-                  <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/usuario/">Veja seu perfil</a>    
-                  <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/usuarios/">Buscar usuário</a>
-                  <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/logout">Sair</a>
+                    <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/usuario/">Veja seu perfil</a>
+                    {% if request.user.is_superuser %}    
+                        <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/usuarios/">Buscar usuário</a>
+                    {% endif %}
+                    <a class="dropdown-item opcoes-dropdown-perfil-menu fw-bold" href="/certificados/logout">Sair</a>
                 </div>
             </div>
         </div>

@@ -13,3 +13,11 @@ function fechar_modal_menssagem() {
 function dropdown() {
     document.getElementById("dropdown-content").style.display = "block";
 }
+
+function deletar_certificado() {
+    var result = confirm("Esta é uma ação irreversível, deseja mesmo deletar o certificado?")
+    if(result == true) {
+        att_formValidarCertificado('deletar')
+        document.getElementById('form-certificado').submit();
+    }
+}

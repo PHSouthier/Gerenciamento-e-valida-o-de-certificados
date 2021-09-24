@@ -1,6 +1,7 @@
 from django.contrib.auth.backends import UserModel
 from django.db import models
 from django.utils import timezone
+from .validators import validate_file_extension
 
 class Certificado(models.Model):
     horas = models.IntegerField()
@@ -8,7 +9,10 @@ class Certificado(models.Model):
     data_emissao = models.DateTimeField()
     data_envio = models.DateTimeField(default=timezone.now)
     situacao = models.SmallIntegerField(default = 2)
-    imagem = models.ImageField(upload_to = 'certificados/', default = "certificados/padrao.png")
+    imagem = models.FileField(
+        upload_to = 'certificados/',
+        validators=[validate_file_extension]
+    )
     usuario = models.ForeignKey('auth.User', on_delete=models.CASCADE)
     categoria = models.ForeignKey('Categoria', on_delete=models.CASCADE)
     curso = models.ForeignKey('Curso', on_delete=models.CASCADE)
@@ -31,6 +35,9 @@ class Certificado(models.Model):
             return (self.usuario.first_name + " " + self.usuario.last_name)[0:100]
         else:
             return (self.usuario.first_name + " " + self.usuario.last_name)[0:97] + "..."
+        
+    def pdf(self):
+        return self.imagem.name.endswith('.pdf')
     
 class Categoria(models.Model):
     nome = models.CharField(max_length=100)

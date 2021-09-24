@@ -4,5 +4,6 @@ document.getElementById("id_titulo").style.marginBottom = "10px"
 document.getElementById("id_horas").style.marginBottom = "10px"
 document.getElementById("id_data_emissao").style.marginBottom = "10px"
 document.getElementById("id_categoria").style.marginBottom = "10px"
-document.getElementById("id_situacao").style.marginBottom = "10px"
-document.getElementById("id_imagem").style = "word-break: break-all;"
+document.getElementById("id_imagem").accept = ".jpg,.jpeg,.png"
+
+
