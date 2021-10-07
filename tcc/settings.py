@@ -144,3 +144,5 @@ MEDIA_URL = '/media/'
 
 # configuração de login
 LOGIN_URL = '/certificados/login/'
+
+X_FRAME_OPTIONS = 'SAMEORIGIN'

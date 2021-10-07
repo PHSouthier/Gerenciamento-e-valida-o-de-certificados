@@ -3,10 +3,10 @@ function nome_user_encurtado() {
     var sobrenome = document.getElementById("sobrenome_usuario").innerHTML;
     var div = document.getElementById("nome_user");
     var stringEncurtada = "";
-    if ((nome.length + sobrenome.length) > 30) {
+    if ((nome.length + sobrenome.length) > 40) {
         var string = `${nome} ${sobrenome}`
         arrayString = string.split("");
-        for(var i = 0; i < 30; i++) {
+        for(var i = 0; i < 40; i++) {
             stringEncurtada = stringEncurtada + arrayString[i]; 
         }
         div.innerHTML = `${stringEncurtada}...`;

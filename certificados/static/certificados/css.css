@@ -86,7 +86,6 @@
     transform: translate(-50%, 0);
     max-width: 40%;
     min-width: 25%;
-    word-break: break-all;
 }
 
 .botoes-Vercertificado {
@@ -112,6 +111,10 @@
 .imagem {
     max-width: 40%;
     min-width: 25%;
+}
+
+.pdf {
+    width: 50%;
 }
 
 .dropdown-perfil-menu {
@@ -251,6 +254,12 @@
     }
 }
 
+@media only screen and (max-width: 1250px) {
+    .pdf {
+        width: 65%;
+    }
+}
+
 @media only screen and (max-width: 1000px) {
     .botoes-Vercertificado {
         grid-template-columns: 100%;
@@ -268,6 +277,10 @@
         max-width: 60%;
         min-width: 60%;
     }
+
+    .pdf {
+        width: 80%;
+    }
 }
 
 @media only screen and (max-width: 600px) {
@@ -284,6 +297,11 @@
     .imagem {
         max-width: 70%;
         min-width: 70%;
+    }
+
+    .pdf {
+        width: 95%;
+        height: 400px;
     }
 }
 

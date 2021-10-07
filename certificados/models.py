@@ -40,7 +40,7 @@ class Certificado(models.Model):
         return self.imagem.name.endswith('.pdf')
     
 class Categoria(models.Model):
-    nome = models.CharField(max_length=100)
+    nome = models.CharField(max_length=170)
     limite_horas = models.IntegerField()
     curso = models.ForeignKey('Curso', on_delete=models.CASCADE)
     

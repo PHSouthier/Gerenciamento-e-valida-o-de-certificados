@@ -5,16 +5,16 @@
     {% if c %}
         <center>
             {% if c.pdf %}
-                <a href="{{ c.imagem.url }}" target="_blank" rel="noopener noreferrer">Ver PDF do certificado</a>
-                <iframe src="{{ c.imagem.url }}" width="50%" height="500px"></iframe>
+                <embed src="{{ c.imagem.url }}" class="pdf" height="500px" />
             {% else %}
                 <a href="{{ c.imagem.url }}"><img src="{{ c.imagem.url }}" class="img-fluid img-thumbnail imagem"></a>
                 <br><br>
             {% endif %}
         </center>
         <div class="ver_certificado">
-            <p><span class="fw-bold">Título: </span>{{c.titulo}}</p>
+            <p><span class="fw-bold break-word">Título: </span>{{c.titulo}}</p>
             <p><span class="fw-bold">Horas: </span>{{c.horas}}</p>
+            <p><span class="fw-bold break-word">Categoria: </span>{{c.categoria}}</p>
             <p><span class="fw-bold">Data de Emissão: </span>{{c.data_emissao|date:'d M. Y'}}</p>
             <p><span class="fw-bold">Data de Envio: </span>{{c.data_envio|date:'d M. Y'}}</p>
             {% if c.situacao == 1 %}
