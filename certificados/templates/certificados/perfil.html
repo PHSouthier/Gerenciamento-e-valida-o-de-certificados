@@ -10,6 +10,7 @@
             <p><span class="fw-bold">E-mail: </span>{{email}}</p>
             <p><span class="fw-bold">Turma: </span>{{u.perfil.turma}}</p>
             <p><span class="fw-bold">Curso: </span>{{u.perfil.curso}}</p>
+            <p><span class="fw-bold">Total de horas concluídas: </span>{{u.perfil.horas_concluidas}} de {{u.perfil.curso.quantidade_horas}}</p>
         </div>   
     {% else %}
             <p> Usuario inexistente. </p>
@@ -67,14 +68,6 @@
                 
                 {% else %}
                     <p>Nenhum certificado cadastrado.</p>
-                {% endif %}
-                
-                {% if formulario == 'certificados' %}
-                    <p>
-                        Horas aprovadas: <span class="fw-bold situacao_aprovado">{{horas_aprovado}}</span><br>
-                        Horas pendentes: <span class="fw-bold situacao_pendente">{{horas_pendente}}</span><br>
-                        Horas recusadas: <span class="fw-bold situacao_recusado">{{horas_recusado}}</span><br>
-                    </p>
                 {% endif %}
             {% endif %}
         {% endif %}

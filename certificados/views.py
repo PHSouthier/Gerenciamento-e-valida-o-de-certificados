@@ -3,7 +3,7 @@ from django.contrib.auth.backends import UserModel
 from certificados.forms import FormCertificado, FormFiltro, FormLogin, FormValidarCertificado
 from django.http.response import HttpResponseRedirect
 from django.shortcuts import render
-from .models import Certificado, Perfil
+from .models import Categoria, Certificado, Perfil
 from django.contrib.auth import authenticate, login, logout
 from django.utils import timezone
 
@@ -14,8 +14,21 @@ def index(request):
         else:
             lista_certificados = Certificado.objects.filter(usuario=request.user).order_by("-data_envio")[0:10]
         
+        u = UserModel.objects.get(id=request.user.id)
+        lista_categorias = Categoria.objects.filter(curso=u.perfil.curso)
+        horas_pendente = 0
+        horas_recusado = 0
+        
+        for c in lista_certificados:
+            if c.situacao == 1: 
+                pass
+            elif c.situacao == 2:
+                horas_pendente = horas_pendente + c.horas
+            elif c.situacao == 3:
+                horas_recusado = horas_recusado + c.horas
+        
         situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
-        contexto = {'lista_certificados': lista_certificados, 'situacao':situacao}
+        contexto = {'lista_certificados': lista_certificados, 'situacao':situacao, 'lista_categorias': lista_categorias, 'u':u, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado}
         return render(request, 'certificados/index.html', contexto)
     else:
         return HttpResponseRedirect("/certificados/login/")
@@ -71,19 +84,18 @@ def mostrar_todos_certificados(request):
                 lista_certificados = Certificado.objects.filter(usuario=request.user)
 
         formulario = "certificados"
-        horas_aprovado = 0
         horas_pendente = 0
         horas_recusado = 0
         for p in lista_certificados:
             if p.situacao == 1:
-                horas_aprovado = horas_aprovado + p.horas
+                pass
             elif p.situacao == 2:
                 horas_pendente = horas_pendente + p.horas
             elif p.situacao == 3:
                 horas_recusado = horas_recusado + p.horas
 
         situacao = ["Aprovado", "Pendente", "Recusado", "Erro"]
-        contexto = {'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'horas_aprovado': horas_aprovado, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado, 'formulario': formulario}
+        contexto = {'lista_certificados': lista_certificados, 'situacao': situacao, 'form': form, 'horas_pendente': horas_pendente, 'horas_recusado': horas_recusado, 'formulario': formulario}
         return render(request, 'certificados/certificados.html', contexto)
     else:
         return HttpResponseRedirect("/certificados/login/")
@@ -308,7 +320,7 @@ def usuario(request, id):
             horas_recusado = 0
             for p in lista_certificados:
                 if p.situacao == 1:
-                    horas_aprovado = horas_aprovado + p.horas
+                    pass
                 elif p.situacao == 2:
                     horas_pendente = horas_pendente + p.horas
                 elif p.situacao == 3:
@@ -329,10 +341,11 @@ def ver_usuarios(request):
         if request.user.is_superuser:
             curso = request.user.perfil.curso
             lista_usuarios = []
+            lista_horas = []
             lista_perfil = Perfil.objects.filter(curso=curso)
             for p in lista_perfil:
                 lista_usuarios.append(p.user)
-            
+                lista_horas.append(p.user.perfil.horas_concluidas)
             if request.method == "POST":
                 operacao = ''
                 form = FormFiltro(request.POST)
@@ -343,6 +356,8 @@ def ver_usuarios(request):
                         lista_usuarios = sorted(lista_usuarios, key=lambda k: k.first_name)
                     elif operacao == "email":
                         lista_usuarios = sorted(lista_usuarios, key=lambda k: k.email)
+                    elif operacao == "horas_concluidas":
+                        pass
                     else:
                         pass
             else:

@@ -62,3 +62,66 @@ class Perfil(models.Model):
 
     def __str__(self):
         return self.user.first_name + " " + self.user.last_name
+
+    def horas_concluidas(self):
+        horas_aprovado = 0
+        categoria_atual = ''
+        horas_categoria_atual = 0
+        todas_categorias = []
+        horas_categorias = []
+        certificados = Certificado.objects.filter(usuario=self.user)
+        categorias = Categoria.objects.filter(curso=self.curso)
+        for c in categorias:
+            horas_categorias.append(c.limite_horas)
+            todas_categorias.append(c.nome)
+        for c in certificados:
+            if c.situacao == 1:
+                for i in range(len(categorias)):
+                    categoria_atual = todas_categorias[i]
+                    horas_categoria_atual = horas_categorias[i]
+                    if(categoria_atual == c.categoria.nome):
+                        if(horas_categoria_atual <= c.horas and c.horas >= 0):
+                            horas_aprovado = horas_aprovado + horas_categoria_atual
+                            horas_categorias[i] = 0
+                        else:
+                            if(horas_categoria_atual > 0 and c.horas >= 0):       
+                                horas_aprovado = horas_aprovado + c.horas
+                                horas_categorias[i] = horas_categorias[i] - c.horas
+                            else:
+                                pass
+                    else:
+                        pass
+        
+        return horas_aprovado
+    
+    def horas_concluidas_categorias(self):
+        categoria_atual = ''
+        todas_categorias = []
+        horas_categorias = []
+        categoria_limites_horas = []
+        horas_and_categorias = []
+        certificados = Certificado.objects.filter(usuario=self.user)
+        categorias = Categoria.objects.filter(curso=self.curso)
+        for c in categorias:
+            horas_categorias.append(0)
+            todas_categorias.append(c.nome)
+            categoria_limites_horas.append(c.limite_horas)
+        for c in certificados:
+            if c.situacao == 1:
+                for i in range(len(categorias)):
+                    categoria_atual = todas_categorias[i]
+                    if(categoria_atual == c.categoria.nome):
+                        horas_categorias[i] = horas_categorias[i] + c.horas 
+                    else:
+                        pass
+            else:
+                pass
+
+        for i in range(len(categorias)):
+            horas_and_categorias.append({'categoria': todas_categorias[i], 'horas': horas_categorias[i], 'limite_horas': categoria_limites_horas[i]})
+
+
+        return horas_and_categorias 
+
+    def percentual_integralizado(self):
+        return int((self.horas_concluidas()/self.curso.quantidade_horas)*100)

@@ -1,6 +1,33 @@
 {% extends 'certificados/base.html' %}
 
 {% block conteudo%}
+    {% if u %}
+        {% if not request.user.is_superuser %}
+            <h3>Certificados aprovados por tipo de atividade</h3>
+            <table class="table" style="margin-top: 32px;">
+                <tr>
+                    <th> Carga horária aprovada por tipo de atividade</th>
+                    <th> Horas </th>
+                </tr>
+                
+                {% for c in u.perfil.horas_concluidas_categorias %}
+                    <tr id="tabela_{{c}}" style="display: normal;" class="elementos_tabela">
+                        <td>{{c.categoria}}</td>
+                        <td>{{c.horas}} de {{c.limite_horas}}</td>
+                    </tr>
+                {% endfor %}
+
+            </table>
+            <h4>Carga horária total integralizada no curso: {{u.perfil.horas_concluidas}} de {{u.perfil.curso.quantidade_horas}}</h4>
+            <div class="progress">
+                <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{u.perfil.percentual_integralizado}}%" aria-valuenow="{{u.perfil.percentual_integralizado}}" aria-valuemin="0" aria-valuemax="100" >{{u.perfil.percentual_integralizado}}%</div>
+            </div>
+            <br><br>
+        {% endif %}
+    {% endif %}
+
+    
+
     {% if lista_certificados %}
     <h3>Últimos 10 certificados enviados</h3>
 
@@ -20,7 +47,7 @@
                 {% else %}
                     <td class="break-word">{{p.tamanho_autor}}</td>
                 {% endif %}
-                <td class="break-all" id="titulo_tabela_{{p}}"><a href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
+                <td class="break-word" id="titulo_tabela_{{p}}"><a href="/certificados/{{ p.id }}">{{p.tamanho_titulo}}</a></td>
                 <td class="form-horas"> {{p.horas}} </td>
                 <td class="form-data-emissao"> {{p.data_emissao|date:'d M. Y'}} </td>
                 <td> {{p.data_envio|date:'d M. Y'}} </td>
